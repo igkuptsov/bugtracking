@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        #edit-project, #tasks-area, #edit-task {
+            display: none;
+        }
+
+        .page-item {
+            cursor:pointer;
+            padding:5px;
+            color:blue;
+        }
+
+        .page-item.selected {
+            color:black;
+        }
+
+        span.sortable-column {
+            color:blue;
+            cursor:pointer;
+        }
+
+        #tasks-filter-area {
+            border:1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h3>Add Project</h3>
+    <form action="javascript:void(0);" method="POST" onsubmit="addProject()">
+        <input type="text" id="add-project-name" placeholder="Project Name">
+        <input type="text" id="add-project-description" placeholder="Project Description">
+        <input type="submit" value="Add">
+    </form>
+
+    <div id="edit-project">
+        <h3>Edit</h3>
+        <form class="edit-project-form">
+            <input type="hidden" id="edit-project-id">
+            <input type="text" id="edit-project-name" placeholder="Project Name">
+            <input type="text" id="edit-project-description" placeholder="Project Description">
+            <input type="submit" value="Save">
+            <a onclick="closeProjectInput()" aria-label="Close">&#10006;</a>
+        </form>
+    </div>
+
+    <p>Projects</p>
+
+    <table>
+        <tr>
+            <th>Project Name</th>
+            <th>Project Description</th>
+            <th>Date Created</th>
+            <th>Date Updated</th>
+        </tr>
+        <tbody id="projects"></tbody>
+    </table>
+    <br />
+    Pages:
+    <div id="projectsPager"></div>
+
+    <div id="tasks-area">
+        <hr />
+        <input type="hidden" id="select-project-id">
+        <input type="hidden" id="task-sort-field">
+        <input type="hidden" id="task-sort-direction">
+
+        <h3>Add Task</h3>
+        <form action="javascript:void(0);" method="POST" onsubmit="addTask()">
+            <input type="text" id="add-task-name" placeholder="Task Name">
+            <input type="text" id="add-task-description" placeholder="Task Description">
+            <input type="text" id="add-task-priority" placeholder="Task Priority">
+            <input type="submit" value="Add">
+        </form>
+
+        <div id="edit-task">
+            <h3>Edit</h3>
+            <form class="edit-task-form">
+                <input type="hidden" id="edit-task-id">
+                <input type="text" id="edit-task-name" placeholder="Task Name">
+                <input type="text" id="edit-task-description" placeholder="Task Description">
+                <input type="text" id="edit-task-priority" placeholder="Task Priority">
+                <select type="text" id="edit-task-status">
+                    <option value="0">New</option>
+                    <option value="1">In progress</option>
+                    <option value="2">Closed</option>
+                </select>
+                <input type="submit" value="Save">
+                <a onclick="closeTaskInput()" aria-label="Close">&#10006;</a>
+            </form>
+        </div>
+        <p>Tasks</p>
+        <table>
+            <tr>
+                <th>Task Name</th>
+                <th>Task Description</th>
+                <th><span class="sortable-column" field="TaskPriority">Task Priority</span></th>
+                <th>Task Status</th>
+                <th><span class="sortable-column" field="TaskDateCreated">Date Created</span></th>
+                <th>Date Updated</th>
+            </tr>
+            <tbody id="tasks"></tbody>
+        </table>
+        <br />
+        Pages:
+        <div id="tasksPager"></div>
+
+        <div id="tasks-filter-area">
+            <input type="hidden" id="task-filter-date-created-from">
+            <input type="hidden" id="task-filter-date-created-to">
+            <input type="hidden" id="task-filter-priority">
+
+            <b>Filter</b>
+            Date created from
+            <input class="datepicker" type="text" id="task-filter-date-created-from-input" />
+            to
+            <input class="datepicker" type="text" id="task-filter-date-created-to-input" /><br>
+            Priority
+            <input type="text" id="task-filter-priority-input" />
+            <button id="task-filter">Filter</button><button id="task-clear-filter">Clear Filter</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script src="bugTracking.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</body>
+</html>
