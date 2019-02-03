@@ -13,6 +13,8 @@ namespace BugTracking.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
+        public const string TotalCountKey = "X-Total-Count";
+
         private readonly BugTrackingContext _context;
 
         public ProjectController(BugTrackingContext context)
@@ -22,12 +24,12 @@ namespace BugTracking.Controllers
 
         // GET: api/Project
         [HttpGet]
-        public IEnumerable<ProjectItem> GetProjectItems(int? skip, int? take)
+        public IEnumerable<ProjectItem> GetProjectItems(int? skip = null, int? take = null)
         {
-            //get totals for pager
-            Response.Headers.Add("X-Total-Count", _context.ProjectItems.Count().ToString());
-
             var _projectItems = _context.ProjectItems.OrderBy(x => x.ProjectDateCreated).AsQueryable();
+
+            //get totals for pager
+            Response.Headers.Add(TotalCountKey, _projectItems.Count().ToString());
 
             //pager logic
             if (skip.HasValue)
@@ -66,8 +68,6 @@ namespace BugTracking.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProjectItem([FromRoute] int id, [FromBody] ProjectItem projectItem)
         {
-            var _projectItem = await _context.ProjectItems.FindAsync(id);
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -76,6 +76,12 @@ namespace BugTracking.Controllers
             if (id != projectItem.ProjectId)
             {
                 return BadRequest();
+            }
+
+            var _projectItem = await _context.ProjectItems.FindAsync(id);
+            if (_projectItem == null)
+            {
+                return NotFound();
             }
 
             _projectItem.ProjectName = projectItem.ProjectName;

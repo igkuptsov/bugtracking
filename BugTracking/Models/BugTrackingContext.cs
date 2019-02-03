@@ -15,6 +15,7 @@ namespace BugTracking.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProjectItem>();
+            modelBuilder.Entity<TaskItem>();
         }
     }
 }
