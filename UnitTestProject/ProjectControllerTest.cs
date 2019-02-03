@@ -93,10 +93,10 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_GetProjectItem()
+        public void TestGetProjectItem()
         {
             var fakeProjectItems = InitProjectItems();
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_GetProjectItem)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItem)))
             {
                 var controller = InitProjectController(context);
                 var id = 4;
@@ -118,10 +118,10 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_GetProjectItem_NotFound()
+        public void TestGetProjectItem_NotFound()
         {
             var fakeProjectItems = InitProjectItems();
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_GetProjectItem_NotFound)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItem_NotFound)))
             {
                 var controller = InitProjectController(context);
                 var actionResult = controller.GetProjectItem(20);
@@ -130,9 +130,9 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_PutProjectItem_NotEqualsIdsReturnBadRequest()
+        public void TestPutProjectItem_NotEqualsIdsReturnBadRequest()
         {
-            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestGetProjectItems_PutProjectItem_NotEqualsIdsReturnBadRequest)))
+            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestPutProjectItem_NotEqualsIdsReturnBadRequest)))
             {
                 var controller = InitProjectController(context);
                 var actionResult = controller.PutProjectItem(1, new ProjectItem { ProjectId = 2 });
@@ -141,9 +141,9 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_PutProjectItem_NotFoundResponse()
+        public void TestPutProjectItem_NotFoundResponse()
         {
-            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestGetProjectItems_PutProjectItem_NotFoundResponse)))
+            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestPutProjectItem_NotFoundResponse)))
             {
                 var controller = InitProjectController(context);
                 var actionResult = controller.PutProjectItem(1, new ProjectItem { ProjectId = 1 });
@@ -152,14 +152,14 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_PutProjectItem()
+        public void TestPutProjectItem()
         {
             var id = 2;
             var fakeProjectItems = InitProjectItems();
             var beforePutProjectItem = fakeProjectItems.FirstOrDefault(i => i.ProjectId == id);
             var putProjectItem = new ProjectItem { ProjectId = id, ProjectName = "NewName", ProjectDescription = "NewDescription", ProjectDateCreated = new DateTime(2019, 01, 01) };
 
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_PutProjectItem)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestPutProjectItem)))
             {
                 var controller = InitProjectController(context);
                 var actionResult = controller.PutProjectItem(id, putProjectItem);
@@ -179,10 +179,10 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_GetProjectItem_ModelStateInvalid()
+        public void TestGetProjectItem_ModelStateInvalid()
         {
             var fakeProjectItems = InitProjectItems();
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_GetProjectItem_ModelStateInvalid)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItem_ModelStateInvalid)))
             {
                 var controller = InitProjectController(context);
                 controller.ModelState.AddModelError("fakeError", "fakeError");
@@ -193,10 +193,10 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_PutProjectItem_ModelStateInvalid()
+        public void TestPutProjectItem_ModelStateInvalid()
         {
             var fakeProjectItems = InitProjectItems();
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_PutProjectItem_ModelStateInvalid)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestPutProjectItem_ModelStateInvalid)))
             {
                 var controller = InitProjectController(context);
                 controller.ModelState.AddModelError("fakeError", "fakeError");
@@ -209,9 +209,9 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_PostProjectItem_ModelStateInvalid()
+        public void TestPostProjectItem_ModelStateInvalid()
         {
-            using (var context = InitContext(new List<ProjectItem> { } , nameof(TestGetProjectItems_PostProjectItem_ModelStateInvalid)))
+            using (var context = InitContext(new List<ProjectItem> { } , nameof(TestPostProjectItem_ModelStateInvalid)))
             {
                 var controller = InitProjectController(context);
                 controller.ModelState.AddModelError("fakeError", "fakeError");
@@ -223,9 +223,9 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_PostProjectItem()
+        public void TestPostProjectItem()
         {
-            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestGetProjectItems_PostProjectItem)))
+            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestPostProjectItem)))
             {
                 var controller = InitProjectController(context);
                 var postProjectItem = new ProjectItem { ProjectName = "name", ProjectDescription = "description", ProjectDateCreated = DateTime.Now.AddDays(1), ProjectDateUpdated = DateTime.Now.AddDays(2) };
@@ -246,10 +246,10 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_DeleteProjectItem_ModelStateInvalid()
+        public void TestDeleteProjectItem_ModelStateInvalid()
         {
             var fakeProjectItems = InitProjectItems();
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_DeleteProjectItem_ModelStateInvalid)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestDeleteProjectItem_ModelStateInvalid)))
             {
                 var controller = InitProjectController(context);
                 controller.ModelState.AddModelError("fakeError", "fakeError");
@@ -261,9 +261,9 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_DeleteProjectItem_NotFound()
+        public void TestDeleteProjectItem_NotFound()
         {
-            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestGetProjectItems_DeleteProjectItem_NotFound)))
+            using (var context = InitContext(new List<ProjectItem> { }, nameof(TestDeleteProjectItem_NotFound)))
             {
                 var controller = InitProjectController(context);
                 var actionResult = controller.DeleteProjectItem(20);
@@ -272,10 +272,10 @@ namespace UnitTestProject
         }
 
         [Fact]
-        public void TestGetProjectItems_DeleteProjectItem()
+        public void TestDeleteProjectItem()
         {
             var fakeProjectItems = InitProjectItems();
-            using (var context = InitContext(fakeProjectItems, nameof(TestGetProjectItems_DeleteProjectItem)))
+            using (var context = InitContext(fakeProjectItems, nameof(TestDeleteProjectItem)))
             {
                 var id = fakeProjectItems.First().ProjectId;
                 var controller = InitProjectController(context);

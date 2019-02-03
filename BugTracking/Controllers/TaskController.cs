@@ -12,6 +12,7 @@ namespace BugTracking.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
+        public const string TotalCountKey = "X-Total-Count";
         private readonly BugTrackingContext _context;
 
         public TaskController(BugTrackingContext context)
@@ -21,9 +22,9 @@ namespace BugTracking.Controllers
 
         // GET: api/Task
         [HttpGet]
-        public IEnumerable<TaskItem> GetTaskItem(int projectId, int? skip, int? take, string sortField, int? sortDirection, int? priorityFilter, DateTime? createdFrom, DateTime? createdTo)
+        public IEnumerable<TaskItem> GetTaskItem(int projectId, int? skip = null, int? take = null, string sortField = null, int? sortDirection = null, int? priorityFilter = null, DateTime? createdFrom = null, DateTime? createdTo = null)
         {            
-            var _taskItem = _context.TaskItem.Where(i => i.ProjectId == projectId).AsQueryable();
+            var _taskItem = _context.TaskItem.Where(i => i.ProjectId == projectId);
 
             //filter logic
             if (priorityFilter.HasValue)
@@ -42,22 +43,22 @@ namespace BugTracking.Controllers
             }
 
             //get totals for pager
-            Response.Headers.Add("X-Total-Count", _taskItem.Count().ToString());
+            Response.Headers.Add(TotalCountKey, _taskItem.Count().ToString());
 
             //sort logic
-            if (!string.IsNullOrEmpty(sortField))
+            if (sortField == nameof(TaskItem.TaskDateCreated))
             {
-                if (sortField == nameof(TaskItem.TaskDateCreated))
-                {
-                    _taskItem = sortDirection == 0 ? _taskItem.OrderBy(i => i.TaskDateCreated) : _taskItem.OrderByDescending(i => i.TaskDateCreated);
-                } else if (sortField == nameof(TaskItem.TaskPriority))
-                {
-                    _taskItem = sortDirection == 0 ? _taskItem.OrderBy(i => i.TaskPriority) : _taskItem.OrderByDescending(i => i.TaskPriority);
-                } else
-                {
-                    _taskItem = sortDirection == 0 ? _taskItem.OrderBy(i => i.TaskDateCreated) : _taskItem.OrderByDescending(i => i.TaskDateCreated);
-                }
+                _taskItem = (!sortDirection.HasValue || sortDirection == 0) ? _taskItem.OrderBy(i => i.TaskDateCreated) : _taskItem.OrderByDescending(i => i.TaskDateCreated);
             }
+            else if (sortField == nameof(TaskItem.TaskPriority))
+            {
+                _taskItem = (!sortDirection.HasValue || sortDirection == 0) ? _taskItem.OrderBy(i => i.TaskPriority) : _taskItem.OrderByDescending(i => i.TaskPriority);
+            }
+            else //default sort
+            {
+                _taskItem = (!sortDirection.HasValue || sortDirection == 0) ? _taskItem.OrderBy(i => i.TaskDateCreated) : _taskItem.OrderByDescending(i => i.TaskDateCreated);
+            }
+
 
             //pager logic
             if (skip.HasValue)
@@ -96,8 +97,6 @@ namespace BugTracking.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTaskItem([FromRoute] int id, [FromBody] TaskItem taskItem)
         {
-            var _taskItem = await _context.TaskItem.FindAsync(id);
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -106,6 +105,13 @@ namespace BugTracking.Controllers
             if (id != taskItem.TaskId)
             {
                 return BadRequest();
+            }
+
+            var _taskItem = await _context.TaskItem.FindAsync(id);
+
+            if (_taskItem == null)
+            {
+                return NotFound();
             }
 
             if (_taskItem.TaskStatus == Enums.TaskStatus.Closed)
@@ -151,6 +157,7 @@ namespace BugTracking.Controllers
 
             taskItem.TaskDateCreated = DateTime.Now;
             taskItem.TaskDateUpdated = taskItem.TaskDateCreated;
+            taskItem.TaskStatus = Enums.TaskStatus.New;
 
             _context.TaskItem.Add(taskItem);
             await _context.SaveChangesAsync();
